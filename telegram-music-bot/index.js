@@ -1,7 +1,10 @@
+require('dotenv').config();
 const TelegramBot = require('node-telegram-bot-api');
 const { request } = require('undici');
+const express = require('express');
+const app = use(express);
 
-const BOT_TOKEN = "7820212598:AAEbFiLJM2a4F32JfApPZlUWSJKmKcxeaFU";
+const BOT_TOKEN = process.env.BOT_TOKEN_KEY;
 
 const bot = new TelegramBot(BOT_TOKEN, { polling: true });
 
@@ -62,4 +65,9 @@ bot.on('message', async (msg) => {
     console.error('Error fetching song data:', error);
    // bot.sendMessage(chatId, 'An error occurred while searching for the song. Please try again later.');
   }
+});
+
+const PORT = process.env.PORT||5000;
+app.listen(PORT, ()=>{
+  console.log('Server is running on port 3000');
 });

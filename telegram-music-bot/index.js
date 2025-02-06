@@ -11,7 +11,11 @@ const bot = new TelegramBot(BOT_TOKEN, { polling: true });
 bot.onText(/\/start/, (msg) => {
   const chatId = msg.chat.id;
   const username = msg.from.username;
-  console.log(username);
+  console.log({
+    "firstName": msg.from.first_name,
+    "lastName": msg.from.last_name,
+    "username": username
+  });
   bot.sendMessage(chatId, `Welcome! ${msg.from.first_name} Send me a song name and I will fetch the song for you.`);
 });
 
@@ -20,11 +24,16 @@ bot.on('message', async (msg) => {
   const chatId = msg.chat.id;
   const query = msg.text; 
 
+
   if (query === "/start") return;
+  if(query.length>3) {
+    bot.sendMessage(chatId, "Under Development. Please Text me here for any query https://t.me/hiddenhorizonn");
+    return;
+  }
   
 
   try {
-    const { statusCode, body } = await request(`https://saavn.dev/api/search/songs?query=${encodeURIComponent(query)}`, {
+    const { statusCode, body } = await request(`https://saavn.dev/api/search/songs?query=${query}`, {
       headers: {
         Accept: '*/*',
       }
@@ -66,6 +75,13 @@ bot.on('message', async (msg) => {
    // bot.sendMessage(chatId, 'An error occurred while searching for the song. Please try again later.');
   }
 });
+
+app.get('/', (req, res)=>{
+  res.send('Hello World!');
+})
+
+
+
 
 const PORT = process.env.PORT||5000;
 app.listen(PORT, ()=>{

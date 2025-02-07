@@ -24,14 +24,8 @@ bot.on('message', async (msg) => {
   const chatId = msg.chat.id;
   const query = msg.text; 
 
-
   if (query === "/start") return;
-  if(query.length>3) {
-    bot.sendMessage(chatId, "Under Development. Please Text me here for any query https://t.me/hiddenhorizonn");
-    return;
-  }
   
-
   try {
     const { statusCode, body } = await request(`https://saavn.dev/api/search/songs?query=${query}`, {
       headers: {
@@ -80,10 +74,17 @@ app.get('/', (req, res)=>{
   res.send('Hello World!');
 })
 
+const PING_INTERVAL = 14 * 60 * 1000;
+
+setInterval(() => {
+  axios.get("https://your-render-app.onrender.com")
+    .then(() => console.log("Server pinged to stay awake."))
+    .catch(err => console.error("Ping failed:", err));
+}, PING_INTERVAL);
 
 
 
 const PORT = process.env.PORT||5000;
 app.listen(PORT, ()=>{
-  console.log('Server is running on port 3000');
+  console.log('Server is running on port 5000');
 });

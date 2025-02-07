@@ -6,7 +6,7 @@ const app = express();
 
 const BOT_TOKEN = process.env.BOT_TOKEN_KEY;
 const PORT = process.env.PORT || 5000;
-const WEBHOOK_URL = `https://telegram-music-bot-zskn.onrender.com/webook`;
+const WEBHOOK_URL = `https://telegram-music-bot-zskn.onrender.com/webhook`;
 
 const bot = new TelegramBot(BOT_TOKEN);
 

@@ -5,9 +5,14 @@ const express = require('express');
 const app = express();
 
 const BOT_TOKEN = process.env.BOT_TOKEN_KEY;
-const bot = new TelegramBot(BOT_TOKEN);
+const PORT = process.env.PORT || 5000;
+const WEBHOOK_URL = `https://telegram-music-bot-zskn.onrender.com`;
 
-const WEBHOOK_URL = `https://telegram-music-bot-zskn.onrender.com/webhook`; 
+const bot = new TelegramBot(BOT_TOKEN, {
+  webHook: {
+    port: PORT
+  }
+});
 
 app.use(express.json());
 
@@ -90,14 +95,13 @@ app.get('/', (req, res)=>{
 //     .catch(err => console.error("Ping failed:", err));
 // }, PING_INTERVAL);
 
-const PORT = process.env.PORT||5000;
+
 
 app.listen(PORT, async () => {
   console.log(`Server is running on port ${PORT}`);
-
   try {
-    await bot.setWebHook(WEBHOOK_URL);
-    console.log(`Webhook set to: ${WEBHOOK_URL}`);
+    await bot.setWebHook(`${WEBHOOK_URL}/webhook`); 
+    console.log(`Webhook set to: ${WEBHOOK_URL}/webhook`);
   } catch (error) {
     console.error('Error setting webhook:', error);
   }

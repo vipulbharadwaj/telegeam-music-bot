@@ -2,6 +2,7 @@ require('dotenv').config();
 const TelegramBot = require('node-telegram-bot-api');
 const { request } = require('undici');
 const express = require('express');
+const { Axios } = require('axios');
 const app = express();
 
 const BOT_TOKEN = process.env.BOT_TOKEN_KEY;
@@ -64,7 +65,10 @@ bot.on('message', async (msg) => {
         if(imageUrl){
             message += `\nImage: ${imageUrl}`
         }
-        bot.sendMessage(chatId, message);
+        if (imageUrl) {
+          bot.sendPhoto(chatId, imageUrl, { caption: message });
+      }
+      
         bot.sendAudio(chatId, downloadUrl,{caption: songName});
         
       } else {
@@ -86,7 +90,7 @@ app.get('/', (req, res)=>{
 const PING_INTERVAL = 10 * 60 * 1000;
 
 setInterval(() => {
-  axios.get("https://your-render-app.onrender.com")
+  Axios.get("https://your-render-app.onrender.com")
     .then(() => console.log("Server pinged to stay awake."))
     .catch(err => console.error("Ping failed:", err));
 }, PING_INTERVAL);

@@ -14,10 +14,7 @@ const bot = new TelegramBot(BOT_TOKEN, { polling: false });
 
 app.use(express.json());
 
-app.post("/webhook", (req, res) => {
-  bot.processUpdate(req.body);
-  res.sendStatus(200);
-});
+
 
 bot.onText(/\/start/, (msg) => {
   const chatId = msg.chat.id;

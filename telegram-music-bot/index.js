@@ -5,11 +5,12 @@ const express = require("express");
 const { Axios } = require("axios");
 const app = express();
 
-const BOT_TOKEN = process.env.BOT_TOKEN_KEY;
-const PORT = process.env.PORT || 5000;
-const WEBHOOK_URL = `https://telegram-music-bot-zskn.onrender.com/webhook`;
 
-const bot = new TelegramBot(BOT_TOKEN);
+
+const BOT_TOKEN = process.env.BOT_TOKEN_KEY;
+
+
+const bot = new TelegramBot(BOT_TOKEN, { polling: false });
 
 app.use(express.json());
 
@@ -95,21 +96,21 @@ bot.on("message", async (msg) => {
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
+const PORT = process.env.PORT || 5000;
+const WEBHOOK_URL = `https://telegram-music-bot-zskn.onrender.com/bot${BOT_TOKEN}`;
 
-const PING_INTERVAL = 10 * 60 * 1000;
-
-setInterval(() => {
-  Axios.get("https://your-render-app.onrender.com")
-    .then(() => console.log("Server pinged to stay awake."))
-    .catch((err) => console.error("Ping failed:", err));
-}, PING_INTERVAL);
+app.post(`/bot${BOT_TOKEN}`, (req, res) => {
+  bot.processUpdate(req.body);
+  res.sendStatus(200);
+});
 
 app.listen(PORT, async () => {
-  console.log(`Server is running on port ${PORT}`);
+  console.log(`✅ Server is running on port ${PORT}`);
+  
   try {
     await bot.setWebHook(WEBHOOK_URL);
-    console.log(`Webhook set to: ${WEBHOOK_URL}`);
+    console.log(`✅ Webhook set to: ${WEBHOOK_URL}`);
   } catch (error) {
-    console.error("Error setting webhook:", error);
+    console.error("❌ Error setting webhook:", error.message);
   }
 });

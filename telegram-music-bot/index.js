@@ -2,21 +2,15 @@ require("dotenv").config();
 const TelegramBot = require("node-telegram-bot-api");
 const { request } = require("undici");
 const express = require("express");
-const { Axios } = require("axios");
 const app = express();
 
 const BOT_TOKEN = process.env.BOT_TOKEN_KEY;
-const PORT = process.env.PORT || 5000;
-const WEBHOOK_URL = `https://telegram-music-bot-zskn.onrender.com/webhook`;
 
-const bot = new TelegramBot(BOT_TOKEN);
+
+const bot = new TelegramBot(BOT_TOKEN, {polling:false});
 
 app.use(express.json());
 
-app.post("/webhook", (req, res) => {
-  bot.processUpdate(req.body);
-  res.sendStatus(200);
-});
 
 bot.onText(/\/start/, (msg) => {
   const chatId = msg.chat.id;
@@ -25,6 +19,7 @@ bot.onText(/\/start/, (msg) => {
     firstName: msg.from.first_name,
     lastName: msg.from.last_name,
     username: username,
+    user_id: msg.from.id
   });
   bot.sendMessage(
     chatId,
@@ -92,24 +87,38 @@ bot.on("message", async (msg) => {
   }
 });
 
+
+
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
-const PING_INTERVAL = 10 * 60 * 1000;
 
-setInterval(() => {
-  Axios.get("https://your-render-app.onrender.com")
-    .then(() => console.log("Server pinged to stay awake."))
-    .catch((err) => console.error("Ping failed:", err));
-}, PING_INTERVAL);
-
-app.listen(PORT, async () => {
-  console.log(`Server is running on port ${PORT}`);
-  try {
-    await bot.setWebHook(WEBHOOK_URL);
-    console.log(`Webhook set to: ${WEBHOOK_URL}`);
-  } catch (error) {
-    console.error("Error setting webhook:", error);
+bot.on('message', (msg) => {
+  if (msg.text && msg.text.toLowerCase() === 'ping') {
+    bot.sendMessage(msg.chat.id, 'Pong! 🏓');
   }
 });
+
+const PORT = process.env.PORT || 5000;
+const WEBHOOK_URL = `https://telegram-music-bot-zskn.onrender.com/webhook/${process.env.BOT_TOKEN}`;
+
+app.post(`/webhook/${process.env.BOT_TOKEN}`, (req, res) => {
+  bot.processUpdate(req.body);
+  res.sendStatus(200);
+});
+
+
+ (async () => {
+  try {
+    await bot.setWebHook(WEBHOOK_URL);
+  } catch (error) {
+    console.error('Error setting webhook:', error);
+  }
+})();
+
+
+app.listen(PORT, () => {
+  console.log(`Bot server listening on port ${PORT}`);
+});
+

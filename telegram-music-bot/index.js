@@ -5,15 +5,10 @@ const express = require("express");
 const app = express();
 
 
-
 const BOT_TOKEN = process.env.BOT_TOKEN_KEY;
-
-
-
 const bot = new TelegramBot(BOT_TOKEN, {polling:false});
 
 app.use(express.json());
-
 
 bot.onText(/\/start/, (msg) => {
   const chatId = msg.chat.id;

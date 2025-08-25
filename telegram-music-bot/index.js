@@ -99,7 +99,8 @@ bot.on('message', (msg) => {
 });
 
 const PORT = process.env.PORT || 5000;
-const WEBHOOK_URL = `https://telegram-music-bot-zskn.onrender.com/webhook/${process.env.BOT_TOKEN}`;
+//const WEBHOOK_URL = `https://telegram-music-bot-zskn.onrender.com/webhook/${process.env.BOT_TOKEN}`;
+const WEBHOOK_URL = `https://telegram-music-bot-17nv.onrender.com/webhook/${process.env.BOT_TOKEN}`;
 
 app.post(`/webhook/${process.env.BOT_TOKEN}`, (req, res) => {
   bot.processUpdate(req.body);
